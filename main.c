@@ -119,17 +119,18 @@ ISR(ANA_COMP_vect)
                 }
                 else if(pulseWidthL < 137)
                 {
+                    // Backward
                     if(pulseWidthL < 91)
                     {
-                        v1 = 240;
+                        v1 = 250;
                     }
                     else if(pulseWidthL < 114)
                     {
-                        v1 = 215;
+                        v1 = 236;
                     }
                     else
                     {
-                        v1 = 200;
+                        v1 = 216;
                     }
                     dir1 = 1;
                     OCR1AH = 0;
@@ -138,17 +139,18 @@ ISR(ANA_COMP_vect)
                 }
                 else
                 {
+                    // Forward
                     if(pulseWidthL > 227)
                     {
-                        v1 = 240;
+                        v1 = 250;
                     }
                     else if(pulseWidthL > 204)
                     {
-                        v1 = 215;
+                        v1 = 236;
                     }
                     else
                     {
-                        v1 = 200;
+                        v1 = 216;
                     }
                     dir1 = 0;
                     OCR1AH = 0;
@@ -163,15 +165,15 @@ ISR(ANA_COMP_vect)
                 {
                     if(pulseWidthR < 91)
                     {
-                        v2 = 250;
+                        v2 = 251;
                     }
                     else if(pulseWidthR < 114)
                     {
-                        v2 = 225;
+                        v2 = 241;
                     }
                     else
                     {
-                        v2 = 200;
+                        v2 = 216;
                     }
                     dir2 = 1;
                     OCR1BH = 0;
@@ -181,15 +183,15 @@ ISR(ANA_COMP_vect)
                 {
                     if(pulseWidthR > 227)
                     {
-                        v2 = 250;
+                        v2 = 251;
                     }
                     else if(pulseWidthR > 204)
                     {
-                        v2 = 225;
+                        v2 = 241;
                     }
                     else
                     {
-                        v2 = 200;
+                        v2 = 216;
                     }
                     dir2 = 0;
                     OCR1BH = 0;
