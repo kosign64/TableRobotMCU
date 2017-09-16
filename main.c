@@ -3,7 +3,7 @@
 #include <avr/interrupt.h>
 #include <stdbool.h>
 
-#define DURA_NUMBER 1
+#define ROBOT_NUMBER 1
 
 // LEDS
 #define BLUE   2
@@ -26,6 +26,7 @@ unsigned int ovfCounter;
 bool valid = true;
 CurrentState state = START;
 
+// Stop Motors PWM Pulses
 ISR(TIMER1_OVF_vect)
 {
     PORTC = 0;
@@ -43,6 +44,8 @@ ISR(TIMER2_OVF_vect)
         robotNumber = 0;
         valid = true;
     }
+    // If there is no control signal for a long time,
+    // then stop motors
     if(ovfCounter > 100)
     {
         v1 = 0;
@@ -50,12 +53,13 @@ ISR(TIMER2_OVF_vect)
     }
 }
 
+// Interrupt by control signal changes
 ISR(ANA_COMP_vect)
 {
     static unsigned char stop;
     static unsigned int pulseWidthL;
     static unsigned int pulseWidthR;
-    // if start
+    // Rising front of control signal
     if(bit_is_clear(ACSR, ACO))
     {
         unsigned int validWidth;
@@ -102,14 +106,14 @@ ISR(ANA_COMP_vect)
         }
         if(state == LEFT)
         {
-            if((robotNumber == DURA_NUMBER) && (valid == true))
+            if((robotNumber == ROBOT_NUMBER) && (valid == true))
             {
                 pulseWidthL = (unsigned int)stop + (unsigned int)ovfCounter * 256;
             }
         }
         else if(state == RIGHT)
         {
-            if((robotNumber == DURA_NUMBER) && (valid == true))
+            if((robotNumber == ROBOT_NUMBER) && (valid == true))
             {
                 pulseWidthR = (unsigned int)stop + (unsigned int)ovfCounter * 256;
                 if((pulseWidthL < 182) && (pulseWidthL > 136))
@@ -203,6 +207,7 @@ ISR(ANA_COMP_vect)
     PORTD ^= _BV(RED);
 }
 
+// Start First Motor PWM Pulse
 ISR(TIMER1_COMPA_vect)
 {
     if(v1 > 100)
@@ -218,6 +223,7 @@ ISR(TIMER1_COMPA_vect)
     }
 }
 
+// Start Second Motor PWM Pulse
 ISR(TIMER1_COMPB_vect)
 {
     if(v2 > 100)
@@ -251,6 +257,7 @@ int main(void)
     OCR1BH = 0x00;
     OCR1BL = 255;
 
+    // Normal mode, Prescaler = 64
     TCCR2 = _BV(CS22);
     TIMSK = _BV(OCIE1A) | _BV(OCIE1B) | _BV(TOIE1) | _BV(TOIE2);
 
